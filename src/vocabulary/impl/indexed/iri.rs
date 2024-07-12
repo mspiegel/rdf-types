@@ -1,6 +1,6 @@
 use iref::Iri;
-use std::convert::TryFrom;
-use std::hash::Hash;
+use core::convert::TryFrom;
+use core::hash::Hash;
 
 /// Iri index.
 #[derive(Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Debug)]
@@ -36,15 +36,15 @@ impl<'a> TryFrom<&'a Iri> for IriIndex {
 impl<V: crate::vocabulary::IriVocabulary<Iri = Self>> contextual::DisplayWithContext<V>
 	for IriIndex
 {
-	fn fmt_with(&self, vocabulary: &V, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		std::fmt::Display::fmt(&vocabulary.iri(self).unwrap(), f)
+	fn fmt_with(&self, vocabulary: &V, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+		core::fmt::Display::fmt(&vocabulary.iri(self).unwrap(), f)
 	}
 }
 
 #[cfg(feature = "contextual")]
 impl<V: crate::vocabulary::IriVocabulary<Iri = Self>> crate::RdfDisplayWithContext<V> for IriIndex {
-	fn rdf_fmt_with(&self, vocabulary: &V, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		std::fmt::Display::fmt(&vocabulary.iri(self).unwrap(), f)
+	fn rdf_fmt_with(&self, vocabulary: &V, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+		core::fmt::Display::fmt(&vocabulary.iri(self).unwrap(), f)
 	}
 }
 
@@ -99,8 +99,8 @@ impl<'a, I: TryFrom<&'a Iri>> TryFrom<&'a Iri> for IriOrIndex<I> {
 impl<I, V: crate::vocabulary::IriVocabulary<Iri = IriOrIndex<I>>> contextual::DisplayWithContext<V>
 	for IriOrIndex<I>
 {
-	fn fmt_with(&self, vocabulary: &V, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		std::fmt::Display::fmt(&vocabulary.iri(self).unwrap(), f)
+	fn fmt_with(&self, vocabulary: &V, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+		core::fmt::Display::fmt(&vocabulary.iri(self).unwrap(), f)
 	}
 }
 
@@ -108,7 +108,7 @@ impl<I, V: crate::vocabulary::IriVocabulary<Iri = IriOrIndex<I>>> contextual::Di
 impl<I, V: crate::vocabulary::IriVocabulary<Iri = IriOrIndex<I>>> crate::RdfDisplayWithContext<V>
 	for IriOrIndex<I>
 {
-	fn rdf_fmt_with(&self, vocabulary: &V, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+	fn rdf_fmt_with(&self, vocabulary: &V, f: &mut core::fmt::Formatter) -> core::fmt::Result {
 		write!(f, "<{}>", &vocabulary.iri(self).unwrap())
 	}
 }

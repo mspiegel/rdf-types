@@ -1,4 +1,4 @@
-use std::{cmp::Ordering, fmt::Debug, hash::Hash};
+use core::{cmp::Ordering, fmt::Debug, hash::Hash};
 
 use educe::Educe;
 use raw_btree::RawBTree;
@@ -378,7 +378,7 @@ impl<R: Ord> Ord for BTreeGraph<R> {
 }
 
 impl<R: Hash> Hash for BTreeGraph<R> {
-	fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+	fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
 		state.write_usize(self.len());
 		for elt in self {
 			elt.hash(state);
@@ -406,13 +406,13 @@ impl<R> Resource<R> {
 }
 
 impl<R: Debug> Debug for BTreeGraph<R> {
-	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 		f.debug_set().entries(self.iter()).finish()
 	}
 }
 
 impl<R: RdfDisplay> RdfDisplay for BTreeGraph<R> {
-	fn rdf_fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+	fn rdf_fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
 		for t in self {
 			writeln!(f, "{} .", t.rdf_display())?;
 		}
@@ -443,7 +443,7 @@ impl<'de, R: Clone + Ord + serde::Deserialize<'de>> serde::Deserialize<'de> for 
 		impl<'de, R: Clone + Ord + serde::Deserialize<'de>> serde::de::Visitor<'de> for Visitor<R> {
 			type Value = BTreeGraph<R>;
 
-			fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+			fn expecting(&self, formatter: &mut core::fmt::Formatter) -> core::fmt::Result {
 				write!(formatter, "an RDF graph")
 			}
 

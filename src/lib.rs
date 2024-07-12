@@ -17,6 +17,14 @@
 //! [w3c]: <https://www.w3.org/>
 #![recursion_limit = "1024"]
 
+#![cfg_attr(not(feature = "std"), no_std)]
+
+#[cfg(test)]
+#[macro_use]
+extern crate std;
+
+extern crate alloc;
+
 #[doc(hidden)]
 pub use iref;
 

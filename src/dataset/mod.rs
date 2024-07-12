@@ -162,10 +162,10 @@ pub trait NamedGraphTraversableDataset: Dataset {
 }
 
 impl<G: Graph> NamedGraphTraversableDataset for G {
-	type NamedGraphs<'a> = std::iter::Empty<&'a Self::Resource> where Self: 'a;
+	type NamedGraphs<'a> = core::iter::Empty<&'a Self::Resource> where Self: 'a;
 
 	fn named_graphs(&self) -> Self::NamedGraphs<'_> {
-		std::iter::empty()
+		core::iter::empty()
 	}
 
 	fn named_graph_count(&self) -> usize {

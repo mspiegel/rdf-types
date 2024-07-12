@@ -1,6 +1,6 @@
 use crate::BlankId;
-use std::convert::TryFrom;
-use std::hash::Hash;
+use core::convert::TryFrom;
+use core::hash::Hash;
 
 /// Blank id index.
 #[derive(Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Debug)]
@@ -36,8 +36,8 @@ impl<'a> TryFrom<&'a BlankId> for BlankIdIndex {
 impl<V: crate::vocabulary::BlankIdVocabulary<BlankId = Self>> contextual::DisplayWithContext<V>
 	for BlankIdIndex
 {
-	fn fmt_with(&self, vocabulary: &V, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		std::fmt::Display::fmt(&vocabulary.blank_id(self).unwrap(), f)
+	fn fmt_with(&self, vocabulary: &V, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+		core::fmt::Display::fmt(&vocabulary.blank_id(self).unwrap(), f)
 	}
 }
 
@@ -45,8 +45,8 @@ impl<V: crate::vocabulary::BlankIdVocabulary<BlankId = Self>> contextual::Displa
 impl<V: crate::vocabulary::BlankIdVocabulary<BlankId = Self>> crate::RdfDisplayWithContext<V>
 	for BlankIdIndex
 {
-	fn rdf_fmt_with(&self, vocabulary: &V, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		std::fmt::Display::fmt(&vocabulary.blank_id(self).unwrap(), f)
+	fn rdf_fmt_with(&self, vocabulary: &V, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+		core::fmt::Display::fmt(&vocabulary.blank_id(self).unwrap(), f)
 	}
 }
 
@@ -85,8 +85,8 @@ impl<'a, I: TryFrom<&'a BlankId>> TryFrom<&'a BlankId> for BlankIdOrIndex<I> {
 impl<I, V: crate::vocabulary::BlankIdVocabulary<BlankId = BlankIdOrIndex<I>>>
 	contextual::DisplayWithContext<V> for BlankIdOrIndex<I>
 {
-	fn fmt_with(&self, vocabulary: &V, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		std::fmt::Display::fmt(&vocabulary.blank_id(self).unwrap(), f)
+	fn fmt_with(&self, vocabulary: &V, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+		core::fmt::Display::fmt(&vocabulary.blank_id(self).unwrap(), f)
 	}
 }
 
@@ -94,8 +94,8 @@ impl<I, V: crate::vocabulary::BlankIdVocabulary<BlankId = BlankIdOrIndex<I>>>
 impl<I, V: crate::vocabulary::BlankIdVocabulary<BlankId = BlankIdOrIndex<I>>>
 	crate::RdfDisplayWithContext<V> for BlankIdOrIndex<I>
 {
-	fn rdf_fmt_with(&self, vocabulary: &V, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-		std::fmt::Display::fmt(&vocabulary.blank_id(self).unwrap(), f)
+	fn rdf_fmt_with(&self, vocabulary: &V, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+		core::fmt::Display::fmt(&vocabulary.blank_id(self).unwrap(), f)
 	}
 }
 

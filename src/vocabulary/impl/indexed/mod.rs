@@ -1,5 +1,6 @@
-use std::hash::Hash;
-use std::marker::PhantomData;
+use alloc::borrow::ToOwned;
+use core::hash::Hash;
+use core::marker::PhantomData;
 
 use crate::vocabulary::{
 	BlankIdVocabulary, BlankIdVocabularyMut, IriVocabulary, IriVocabularyMut, LiteralVocabulary,

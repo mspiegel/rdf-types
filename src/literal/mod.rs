@@ -6,8 +6,10 @@ use crate::{IsXsdStringIri, RdfDisplay};
 use educe::Educe;
 use iref::IriBuf;
 use langtag::LangTag;
-use std::borrow::Borrow;
-use std::fmt;
+use alloc::string::String;
+use alloc::borrow::ToOwned;
+use core::borrow::Borrow;
+use core::fmt;
 
 #[cfg(feature = "contextual")]
 use contextual::DisplayWithContext;

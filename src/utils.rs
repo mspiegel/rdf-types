@@ -1,11 +1,11 @@
-use std::marker::PhantomData;
+use core::marker::PhantomData;
 
 use crate::{Quad, Triple};
 
 pub struct InfallibleIterator<I>(pub I);
 
 impl<I: Iterator> Iterator for InfallibleIterator<I> {
-	type Item = Result<I::Item, std::convert::Infallible>;
+	type Item = Result<I::Item, core::convert::Infallible>;
 
 	fn next(&mut self) -> Option<Self::Item> {
 		self.0.next().map(Ok)

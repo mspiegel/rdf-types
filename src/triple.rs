@@ -1,4 +1,5 @@
-use std::{cmp::Ordering, fmt};
+use alloc::borrow::ToOwned;
+use core::{cmp::Ordering, fmt};
 
 use iref::{Iri, IriBuf};
 

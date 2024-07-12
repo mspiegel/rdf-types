@@ -1,7 +1,10 @@
-use std::borrow::{Borrow, ToOwned};
-use std::fmt;
-use std::ops::Deref;
-use std::str::FromStr;
+use alloc::borrow::ToOwned;
+use alloc::format;
+use alloc::string::String;
+use core::borrow::Borrow;
+use core::fmt;
+use core::ops::Deref;
+use core::str::FromStr;
 
 /// Invalid blank node identifier.
 ///
@@ -42,7 +45,7 @@ impl BlankId {
 	/// The input string `s` must be a valid blank node identifier.
 	#[inline(always)]
 	pub unsafe fn new_unchecked(s: &str) -> &Self {
-		std::mem::transmute(s)
+		core::mem::transmute(s)
 	}
 
 	/// Returns a reference to the underlying string defining the blank node identifier.
@@ -148,7 +151,7 @@ impl BlankIdBuf {
 	/// The input string `s` must be a valid blank node identifier.
 	#[inline(always)]
 	pub unsafe fn new_unchecked(s: String) -> Self {
-		std::mem::transmute(s)
+		core::mem::transmute(s)
 	}
 
 	/// Creates a blank node identifier using the given `u8` as suffix.

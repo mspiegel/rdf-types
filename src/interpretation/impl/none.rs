@@ -1,3 +1,4 @@
+use alloc::borrow::ToOwned;
 use iref::{Iri, IriBuf};
 
 use crate::{
@@ -34,7 +35,7 @@ impl IriInterpretation<Iri> for () {
 impl ReverseIriInterpretation for () {
 	type Iri = IriBuf;
 
-	type Iris<'a> = std::option::IntoIter<&'a IriBuf>;
+	type Iris<'a> = core::option::IntoIter<&'a IriBuf>;
 
 	fn iris_of<'a>(&'a self, id: &'a Self::Resource) -> Self::Iris<'a> {
 		match id {
@@ -65,7 +66,7 @@ impl BlankIdInterpretation<BlankId> for () {
 impl ReverseBlankIdInterpretation for () {
 	type BlankId = BlankIdBuf;
 
-	type BlankIds<'a> = std::option::IntoIter<&'a BlankIdBuf>;
+	type BlankIds<'a> = core::option::IntoIter<&'a BlankIdBuf>;
 
 	fn blank_ids_of<'a>(&'a self, id: &'a Self::Resource) -> Self::BlankIds<'a> {
 		match id {
@@ -90,7 +91,7 @@ impl LiteralInterpretationMut<Literal> for () {
 impl ReverseLiteralInterpretation for () {
 	type Literal = Literal;
 
-	type Literals<'a> = std::option::IntoIter<&'a Literal>;
+	type Literals<'a> = core::option::IntoIter<&'a Literal>;
 
 	fn literals_of<'a>(&'a self, id: &'a Self::Resource) -> Self::Literals<'a> {
 		match id {

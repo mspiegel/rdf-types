@@ -1,4 +1,5 @@
-use std::collections::{HashMap, HashSet};
+use alloc::vec::Vec;
+use alloc::collections::{BTreeMap, BTreeSet};
 
 use crate::interpretation::{
 	BlankIdInterpretation, BlankIdInterpretationMut, IriInterpretation, IriInterpretationMut,
@@ -27,18 +28,18 @@ impl From<ResourceIndex> for usize {
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct Resource {
 	index: ResourceIndex,
-	iris: HashSet<IriIndex>,
-	blank_ids: HashSet<BlankIdIndex>,
-	literals: HashSet<LiteralIndex>,
+	iris: BTreeSet<IriIndex>,
+	blank_ids: BTreeSet<BlankIdIndex>,
+	literals: BTreeSet<LiteralIndex>,
 }
 
 impl Resource {
 	fn new(index: ResourceIndex) -> Self {
 		Self {
 			index,
-			iris: HashSet::new(),
-			blank_ids: HashSet::new(),
-			literals: HashSet::new(),
+			iris: BTreeSet::new(),
+			blank_ids: BTreeSet::new(),
+			literals: BTreeSet::new(),
 		}
 	}
 }
@@ -74,9 +75,9 @@ impl Resources {
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct Indexed {
 	resources: Resources,
-	by_iri: HashMap<IriIndex, ResourceIndex>,
-	by_blank_id: HashMap<BlankIdIndex, ResourceIndex>,
-	by_literal: HashMap<LiteralIndex, ResourceIndex>,
+	by_iri: BTreeMap<IriIndex, ResourceIndex>,
+	by_blank_id: BTreeMap<BlankIdIndex, ResourceIndex>,
+	by_literal: BTreeMap<LiteralIndex, ResourceIndex>,
 }
 
 impl Indexed {
@@ -111,7 +112,7 @@ impl<V> InterpretationMut<V> for Indexed {
 	}
 }
 
-pub struct ResourceIndexIter<'a>(std::slice::Iter<'a, Resource>);
+pub struct ResourceIndexIter<'a>(core::slice::Iter<'a, Resource>);
 
 impl<'a> Iterator for ResourceIndexIter<'a> {
 	type Item = &'a ResourceIndex;
@@ -173,7 +174,7 @@ impl ReverseIriInterpretation for Indexed {
 	type Iri = IriIndex;
 
 	type Iris<'a> =
-		std::iter::Flatten<std::option::IntoIter<std::collections::hash_set::Iter<'a, IriIndex>>>;
+		core::iter::Flatten<core::option::IntoIter<alloc::collections::btree_set::Iter<'a, IriIndex>>>;
 
 	fn iris_of(&self, id: &Self::Resource) -> Self::Iris<'_> {
 		self.resources
@@ -187,8 +188,8 @@ impl ReverseIriInterpretation for Indexed {
 impl ReverseBlankIdInterpretation for Indexed {
 	type BlankId = BlankIdIndex;
 
-	type BlankIds<'a> = std::iter::Flatten<
-		std::option::IntoIter<std::collections::hash_set::Iter<'a, BlankIdIndex>>,
+	type BlankIds<'a> = core::iter::Flatten<
+		core::option::IntoIter<alloc::collections::btree_set::Iter<'a, BlankIdIndex>>,
 	>;
 
 	fn blank_ids_of(&self, id: &Self::Resource) -> Self::BlankIds<'_> {
@@ -203,8 +204,8 @@ impl ReverseBlankIdInterpretation for Indexed {
 impl ReverseLiteralInterpretation for Indexed {
 	type Literal = LiteralIndex;
 
-	type Literals<'a> = std::iter::Flatten<
-		std::option::IntoIter<std::collections::hash_set::Iter<'a, LiteralIndex>>,
+	type Literals<'a> = core::iter::Flatten<
+		core::option::IntoIter<alloc::collections::btree_set::Iter<'a, LiteralIndex>>,
 	>;
 
 	fn literals_of(&self, id: &Self::Resource) -> Self::Literals<'_> {

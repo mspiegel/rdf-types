@@ -1,4 +1,5 @@
-use std::collections::{btree_map::Entry, BTreeMap, BTreeSet};
+use alloc::vec::Vec;
+use alloc::collections::{btree_map::Entry, BTreeMap, BTreeSet};
 
 use educe::Educe;
 
@@ -83,6 +84,7 @@ where
 	collect_signatures(interpretation, &mut b_blanks_map, b);
 
 	if a_blanks_map.len() != b_blanks_map.len() {
+		#[cfg(feature = "std")]
 		eprintln!("different blank node count");
 		return None;
 	}
@@ -92,11 +94,13 @@ where
 	let b_groups = split_by_size(&b_blanks_map);
 
 	if a_groups.len() != b_groups.len() {
+		#[cfg(feature = "std")]
 		eprintln!("different group count");
 		return None;
 	}
 
 	if !a_groups.iter().all(|(len, _)| b_groups.contains_key(len)) {
+		#[cfg(feature = "std")]
 		eprintln!("different group lengths");
 		return None;
 	}
@@ -115,6 +119,7 @@ where
 			}
 
 			if a_blank_id_candidates.is_empty() {
+				#[cfg(feature = "std")]
 				eprintln!("no candidates found for blank id");
 				return None;
 			}
@@ -374,7 +379,7 @@ impl<'a, 'b, R: Ord> BTreeBijection<'a, 'b, R> {
 	fn find_from_candidates<I>(
 		self,
 		interpretation: &I,
-		mut candidates: std::collections::btree_map::Iter<&'a R, BTreeSet<&'b R>>,
+		mut candidates: alloc::collections::btree_map::Iter<&'a R, BTreeSet<&'b R>>,
 		a: &BTreeMap<&'a R, BlankSignature<'a, R>>,
 		b: &BTreeMap<&'b R, BlankSignature<'b, R>>,
 	) -> Option<Self>

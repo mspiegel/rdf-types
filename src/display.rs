@@ -1,4 +1,5 @@
-use std::fmt;
+use alloc::string::String;
+use core::fmt;
 
 use langtag::{LangTag, LangTagBuf};
 

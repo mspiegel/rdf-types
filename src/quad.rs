@@ -1,6 +1,9 @@
-use std::{cmp::Ordering, fmt};
+use alloc::borrow::ToOwned;
+use core::{cmp::Ordering, fmt};
 
 use iref::{Iri, IriBuf};
+
+use thiserror_nostd_notrait::Error;
 
 use crate::{
 	interpretation::Interpret,
@@ -375,7 +378,7 @@ pub trait TryExportQuad<S, P, O, G> {
 /// [`Quad`].
 ///
 /// [1]: TryExtractFromVocabulary::try_extract_from_vocabulary
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, Error)]
 pub enum QuadExportFailed<S, P, O, G> {
 	#[error("invalid subject: {0}")]
 	Subject(S),

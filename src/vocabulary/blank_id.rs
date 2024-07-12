@@ -1,3 +1,4 @@
+use alloc::borrow::ToOwned;
 use crate::{BlankId, BlankIdBuf};
 
 use super::{EmbedIntoVocabulary, EmbeddedIntoVocabulary};

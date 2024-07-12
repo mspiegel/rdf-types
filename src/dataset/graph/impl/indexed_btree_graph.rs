@@ -1,4 +1,5 @@
-use std::{cmp::Ordering, collections::BTreeSet, fmt::Debug, hash::Hash};
+use alloc::collections::BTreeSet;
+use core::{cmp::Ordering, fmt::Debug, hash::Hash};
 
 use educe::Educe;
 use raw_btree::RawBTree;
@@ -519,7 +520,7 @@ impl<'a, R> Iterator for Resources<'a, R> {
 
 pub struct Subjects<'a, R> {
 	resources: &'a Slab<Resource<R>>,
-	indexes: std::collections::btree_set::Iter<'a, usize>,
+	indexes: alloc::collections::btree_set::Iter<'a, usize>,
 }
 
 impl<'a, R> Iterator for Subjects<'a, R> {
@@ -532,7 +533,7 @@ impl<'a, R> Iterator for Subjects<'a, R> {
 
 pub struct Predicates<'a, R> {
 	resources: &'a Slab<Resource<R>>,
-	indexes: std::collections::btree_set::Iter<'a, usize>,
+	indexes: alloc::collections::btree_set::Iter<'a, usize>,
 }
 
 impl<'a, R> Iterator for Predicates<'a, R> {
@@ -545,7 +546,7 @@ impl<'a, R> Iterator for Predicates<'a, R> {
 
 pub struct Objects<'a, R> {
 	resources: &'a Slab<Resource<R>>,
-	indexes: std::collections::btree_set::Iter<'a, usize>,
+	indexes: alloc::collections::btree_set::Iter<'a, usize>,
 }
 
 impl<'a, R> Iterator for Objects<'a, R> {
@@ -577,7 +578,7 @@ impl<R: Ord> Ord for IndexedBTreeGraph<R> {
 }
 
 impl<R: Hash> Hash for IndexedBTreeGraph<R> {
-	fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+	fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
 		state.write_usize(self.len());
 		for elt in self {
 			elt.hash(state);
@@ -621,7 +622,7 @@ impl<'a, R> Iterator for PatternMatching<'a, R> {
 enum SubjectConstraints<'a> {
 	None,
 	Any,
-	Fixed(std::iter::Peekable<std::iter::Copied<std::collections::btree_set::Iter<'a, usize>>>),
+	Fixed(core::iter::Peekable<core::iter::Copied<alloc::collections::btree_set::Iter<'a, usize>>>),
 }
 
 impl<'a> SubjectConstraints<'a> {
@@ -658,7 +659,7 @@ enum PredicateConstraints<'a> {
 	None,
 	Any,
 	SameAsSubject,
-	Fixed(std::iter::Peekable<std::iter::Copied<std::collections::btree_set::Iter<'a, usize>>>),
+	Fixed(core::iter::Peekable<core::iter::Copied<alloc::collections::btree_set::Iter<'a, usize>>>),
 }
 
 impl<'a> PredicateConstraints<'a> {
@@ -706,7 +707,7 @@ enum ObjectConstraints<'a> {
 	Any,
 	SameAsSubject,
 	SameAsPredicate,
-	Fixed(std::iter::Peekable<std::iter::Copied<std::collections::btree_set::Iter<'a, usize>>>),
+	Fixed(core::iter::Peekable<core::iter::Copied<alloc::collections::btree_set::Iter<'a, usize>>>),
 }
 
 impl<'a> ObjectConstraints<'a> {
@@ -769,7 +770,7 @@ impl<R> Resource<R> {
 	pub fn subject(value: R, i: usize) -> Self {
 		Self {
 			value,
-			as_subject: std::iter::once(i).collect(),
+			as_subject: core::iter::once(i).collect(),
 			as_predicate: BTreeSet::new(),
 			as_object: BTreeSet::new(),
 		}
@@ -779,7 +780,7 @@ impl<R> Resource<R> {
 		Self {
 			value,
 			as_subject: BTreeSet::new(),
-			as_predicate: std::iter::once(i).collect(),
+			as_predicate: core::iter::once(i).collect(),
 			as_object: BTreeSet::new(),
 		}
 	}
@@ -789,7 +790,7 @@ impl<R> Resource<R> {
 			value,
 			as_subject: BTreeSet::new(),
 			as_predicate: BTreeSet::new(),
-			as_object: std::iter::once(i).collect(),
+			as_object: core::iter::once(i).collect(),
 		}
 	}
 
@@ -799,13 +800,13 @@ impl<R> Resource<R> {
 }
 
 impl<R: Debug> Debug for IndexedBTreeGraph<R> {
-	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 		f.debug_set().entries(self.iter()).finish()
 	}
 }
 
 impl<R: RdfDisplay> RdfDisplay for IndexedBTreeGraph<R> {
-	fn rdf_fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+	fn rdf_fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
 		for t in self {
 			writeln!(f, "{} .", t.rdf_display())?;
 		}
@@ -838,7 +839,7 @@ impl<'de, R: Clone + Ord + serde::Deserialize<'de>> serde::Deserialize<'de>
 		impl<'de, R: Clone + Ord + serde::Deserialize<'de>> serde::de::Visitor<'de> for Visitor<R> {
 			type Value = IndexedBTreeGraph<R>;
 
-			fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+			fn expecting(&self, formatter: &mut core::fmt::Formatter) -> core::fmt::Result {
 				write!(formatter, "an RDF graph")
 			}
 

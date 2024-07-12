@@ -11,6 +11,9 @@ mod blank_id;
 mod iri;
 mod literal;
 
+use alloc::borrow::ToOwned;
+use alloc::vec::Vec;
+
 pub use blank_id::*;
 use iref::IriBuf;
 pub use iri::*;

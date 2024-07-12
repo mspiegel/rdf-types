@@ -1,4 +1,8 @@
 //! Resource identifier generators.
+
+use alloc::string::String;
+use alloc::format;
+
 use crate::{
 	vocabulary::{BlankIdVocabulary, BlankIdVocabularyMut, IriVocabulary},
 	BlankIdBuf, Id, Vocabulary,

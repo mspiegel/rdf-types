@@ -1,7 +1,7 @@
 use crate::Triple;
 use educe::Educe;
-use std::collections::{HashMap, HashSet};
-use std::hash::Hash;
+use alloc::collections::{BTreeMap, BTreeSet};
+use core::hash::Hash;
 
 use super::canonical::{
 	AnySubject, AnySubjectAnyPredicate, AnySubjectGivenPredicate, CanonicalTriplePattern,
@@ -13,10 +13,10 @@ use super::canonical::{
 #[educe(Default)]
 pub struct TriplePatternMap<V, T> {
 	any: AnySubjectMap<V, T>,
-	given: HashMap<T, GivenSubjectMap<V, T>>,
+	given: BTreeMap<T, GivenSubjectMap<V, T>>,
 }
 
-impl<V: Eq + Hash, T: Eq + Hash> TriplePatternMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> TriplePatternMap<V, T> {
 	pub fn insert(&mut self, pattern: CanonicalTriplePattern<T>, value: V) -> bool {
 		match pattern {
 			CanonicalTriplePattern::AnySubject(rest) => self.any.insert(rest, value),
@@ -27,7 +27,7 @@ impl<V: Eq + Hash, T: Eq + Hash> TriplePatternMap<V, T> {
 	}
 }
 
-impl<V, T: Eq + Hash> TriplePatternMap<V, T> {
+impl<V, T: Eq + Hash + Ord> TriplePatternMap<V, T> {
 	pub fn get(&self, triple: Triple<&T>) -> Values<V> {
 		Values {
 			any: self.any.get(triple),
@@ -55,10 +55,10 @@ impl<'a, V> Iterator for Values<'a, V> {
 #[educe(Default)]
 pub struct GivenSubjectMap<V, T> {
 	any: GivenSubjectAnyPredicateMap<V, T>,
-	given: HashMap<T, GivenSubjectGivenPredicateMap<V, T>>,
+	given: BTreeMap<T, GivenSubjectGivenPredicateMap<V, T>>,
 }
 
-impl<V: Eq + Hash, T: Eq + Hash> GivenSubjectMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> GivenSubjectMap<V, T> {
 	pub fn insert(&mut self, pattern: GivenSubject<T>, value: V) -> bool {
 		match pattern {
 			GivenSubject::AnyPredicate(rest) => self.any.insert(rest, value),
@@ -69,7 +69,7 @@ impl<V: Eq + Hash, T: Eq + Hash> GivenSubjectMap<V, T> {
 	}
 }
 
-impl<V, T: Eq + Hash> GivenSubjectMap<V, T> {
+impl<V, T: Eq + Hash + Ord> GivenSubjectMap<V, T> {
 	pub fn get(&self, triple: Triple<&T>) -> GivenSubjectValues<V> {
 		GivenSubjectValues {
 			any: self.any.get(triple),
@@ -78,7 +78,7 @@ impl<V, T: Eq + Hash> GivenSubjectMap<V, T> {
 	}
 }
 
-impl<V: Eq + Hash, T: Eq + Hash> GivenSubjectMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> GivenSubjectMap<V, T> {
 	pub fn union_with(&mut self, other: Self) {
 		self.any.union_with(other.any);
 		self.given.extend(other.given);
@@ -110,12 +110,12 @@ impl<'a, V> Iterator for GivenSubjectValues<'a, V> {
 #[derive(Debug, Educe)]
 #[educe(Default)]
 pub struct GivenSubjectAnyPredicateMap<V, T> {
-	any: HashSet<V>,
-	same_as_predicate: HashSet<V>,
-	given: HashMap<T, HashSet<V>>,
+	any: BTreeSet<V>,
+	same_as_predicate: BTreeSet<V>,
+	given: BTreeMap<T, BTreeSet<V>>,
 }
 
-impl<V: Eq + Hash, T: Eq + Hash> GivenSubjectAnyPredicateMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> GivenSubjectAnyPredicateMap<V, T> {
 	pub fn insert(&mut self, pattern: GivenSubjectAnyPredicate<T>, value: V) -> bool {
 		match pattern {
 			GivenSubjectAnyPredicate::AnyObject => self.any.insert(value),
@@ -127,7 +127,7 @@ impl<V: Eq + Hash, T: Eq + Hash> GivenSubjectAnyPredicateMap<V, T> {
 	}
 }
 
-impl<V, T: Eq + Hash> GivenSubjectAnyPredicateMap<V, T> {
+impl<V, T: Eq + Hash + Ord> GivenSubjectAnyPredicateMap<V, T> {
 	pub fn get(&self, triple: Triple<&T>) -> GivenSubjectAnyPredicateValues<V> {
 		GivenSubjectAnyPredicateValues {
 			any: self.any.iter(),
@@ -149,7 +149,7 @@ impl<V, T: Eq + Hash> GivenSubjectAnyPredicateMap<V, T> {
 // 	}
 // }
 
-impl<V: Eq + Hash, T: Eq + Hash> GivenSubjectAnyPredicateMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> GivenSubjectAnyPredicateMap<V, T> {
 	pub fn union_with(&mut self, other: Self) {
 		self.any.extend(other.any);
 		self.same_as_predicate.extend(other.same_as_predicate);
@@ -158,9 +158,9 @@ impl<V: Eq + Hash, T: Eq + Hash> GivenSubjectAnyPredicateMap<V, T> {
 }
 
 pub struct GivenSubjectAnyPredicateValues<'a, V> {
-	any: std::collections::hash_set::Iter<'a, V>,
-	same_as_predicate: Option<std::collections::hash_set::Iter<'a, V>>,
-	given: Option<std::collections::hash_set::Iter<'a, V>>,
+	any: alloc::collections::btree_set::Iter<'a, V>,
+	same_as_predicate: Option<alloc::collections::btree_set::Iter<'a, V>>,
+	given: Option<alloc::collections::btree_set::Iter<'a, V>>,
 }
 
 impl<'a, V> Iterator for GivenSubjectAnyPredicateValues<'a, V> {
@@ -177,11 +177,11 @@ impl<'a, V> Iterator for GivenSubjectAnyPredicateValues<'a, V> {
 #[derive(Debug, Educe)]
 #[educe(Default)]
 pub struct GivenSubjectGivenPredicateMap<V, T> {
-	any: HashSet<V>,
-	given: HashMap<T, HashSet<V>>,
+	any: BTreeSet<V>,
+	given: BTreeMap<T, BTreeSet<V>>,
 }
 
-impl<V: Eq + Hash, T: Eq + Hash> GivenSubjectGivenPredicateMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> GivenSubjectGivenPredicateMap<V, T> {
 	pub fn insert(&mut self, pattern: GivenSubjectGivenPredicate<T>, value: V) -> bool {
 		match pattern {
 			GivenSubjectGivenPredicate::AnyObject => self.any.insert(value),
@@ -192,7 +192,7 @@ impl<V: Eq + Hash, T: Eq + Hash> GivenSubjectGivenPredicateMap<V, T> {
 	}
 }
 
-impl<V, T: Eq + Hash> GivenSubjectGivenPredicateMap<V, T> {
+impl<V, T: Eq + Hash + Ord> GivenSubjectGivenPredicateMap<V, T> {
 	pub fn get(&self, triple: Triple<&T>) -> GivenSubjectGivenPredicateValues<V> {
 		GivenSubjectGivenPredicateValues {
 			any: self.any.iter(),
@@ -208,7 +208,7 @@ impl<V, T: Eq + Hash> GivenSubjectGivenPredicateMap<V, T> {
 // 	}
 // }
 
-impl<V: Eq + Hash, T: Eq + Hash> GivenSubjectGivenPredicateMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> GivenSubjectGivenPredicateMap<V, T> {
 	pub fn union_with(&mut self, other: Self) {
 		self.any.extend(other.any);
 		self.given.extend(other.given)
@@ -216,8 +216,8 @@ impl<V: Eq + Hash, T: Eq + Hash> GivenSubjectGivenPredicateMap<V, T> {
 }
 
 pub struct GivenSubjectGivenPredicateValues<'a, V> {
-	any: std::collections::hash_set::Iter<'a, V>,
-	given: Option<std::collections::hash_set::Iter<'a, V>>,
+	any: alloc::collections::btree_set::Iter<'a, V>,
+	given: Option<alloc::collections::btree_set::Iter<'a, V>>,
 }
 
 impl<'a, V> Iterator for GivenSubjectGivenPredicateValues<'a, V> {
@@ -235,10 +235,10 @@ impl<'a, V> Iterator for GivenSubjectGivenPredicateValues<'a, V> {
 pub struct AnySubjectMap<V, T> {
 	any: AnySubjectAnyPredicateMap<V, T>,
 	same_as_subject: AnySubjectGivenPredicateMap<V, T>,
-	given: HashMap<T, AnySubjectGivenPredicateMap<V, T>>,
+	given: BTreeMap<T, AnySubjectGivenPredicateMap<V, T>>,
 }
 
-impl<V: Eq + Hash, T: Eq + Hash> AnySubjectMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> AnySubjectMap<V, T> {
 	pub fn insert(&mut self, pattern: AnySubject<T>, value: V) -> bool {
 		match pattern {
 			AnySubject::AnyPredicate(rest) => self.any.insert(rest, value),
@@ -250,7 +250,7 @@ impl<V: Eq + Hash, T: Eq + Hash> AnySubjectMap<V, T> {
 	}
 }
 
-impl<V, T: Eq + Hash> AnySubjectMap<V, T> {
+impl<V, T: Eq + Hash + Ord> AnySubjectMap<V, T> {
 	pub fn get(&self, triple: Triple<&T>) -> AnySubjectValues<V> {
 		AnySubjectValues {
 			any: self.any.get(triple),
@@ -272,7 +272,7 @@ impl<V, T: Eq + Hash> AnySubjectMap<V, T> {
 // 	}
 // }
 
-impl<V: Eq + Hash, T: Eq + Hash> AnySubjectMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> AnySubjectMap<V, T> {
 	pub fn union_with(&mut self, other: Self) {
 		self.any.union_with(other.any);
 		self.same_as_subject.union_with(other.same_as_subject);
@@ -300,13 +300,13 @@ impl<'a, V> Iterator for AnySubjectValues<'a, V> {
 #[derive(Debug, Educe)]
 #[educe(Default)]
 pub struct AnySubjectAnyPredicateMap<V, T> {
-	any: HashSet<V>,
-	same_as_subject: HashSet<V>,
-	same_as_predicate: HashSet<V>,
-	given: HashMap<T, HashSet<V>>,
+	any: BTreeSet<V>,
+	same_as_subject: BTreeSet<V>,
+	same_as_predicate: BTreeSet<V>,
+	given: BTreeMap<T, BTreeSet<V>>,
 }
 
-impl<V: Eq + Hash, T: Eq + Hash> AnySubjectAnyPredicateMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> AnySubjectAnyPredicateMap<V, T> {
 	pub fn insert(&mut self, pattern: AnySubjectAnyPredicate<T>, value: V) -> bool {
 		match pattern {
 			AnySubjectAnyPredicate::AnyObject => self.any.insert(value),
@@ -319,7 +319,7 @@ impl<V: Eq + Hash, T: Eq + Hash> AnySubjectAnyPredicateMap<V, T> {
 	}
 }
 
-impl<V, T: Eq + Hash> AnySubjectAnyPredicateMap<V, T> {
+impl<V, T: Eq + Hash + Ord> AnySubjectAnyPredicateMap<V, T> {
 	pub fn get(&self, triple: Triple<&T>) -> AnySubjectAnyPredicateValues<V> {
 		AnySubjectAnyPredicateValues {
 			any: self.any.iter(),
@@ -347,7 +347,7 @@ impl<V, T: Eq + Hash> AnySubjectAnyPredicateMap<V, T> {
 // 	}
 // }
 
-impl<V: Eq + Hash, T: Eq + Hash> AnySubjectAnyPredicateMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> AnySubjectAnyPredicateMap<V, T> {
 	pub fn union_with(&mut self, other: Self) {
 		self.any.extend(other.any);
 		self.same_as_subject.extend(other.same_as_subject);
@@ -357,10 +357,10 @@ impl<V: Eq + Hash, T: Eq + Hash> AnySubjectAnyPredicateMap<V, T> {
 }
 
 pub struct AnySubjectAnyPredicateValues<'a, V> {
-	any: std::collections::hash_set::Iter<'a, V>,
-	same_as_subject: Option<std::collections::hash_set::Iter<'a, V>>,
-	same_as_predicate: Option<std::collections::hash_set::Iter<'a, V>>,
-	given: Option<std::collections::hash_set::Iter<'a, V>>,
+	any: alloc::collections::btree_set::Iter<'a, V>,
+	same_as_subject: Option<alloc::collections::btree_set::Iter<'a, V>>,
+	same_as_predicate: Option<alloc::collections::btree_set::Iter<'a, V>>,
+	given: Option<alloc::collections::btree_set::Iter<'a, V>>,
 }
 
 impl<'a, V> Iterator for AnySubjectAnyPredicateValues<'a, V> {
@@ -378,12 +378,12 @@ impl<'a, V> Iterator for AnySubjectAnyPredicateValues<'a, V> {
 #[derive(Debug, Educe)]
 #[educe(Default)]
 pub struct AnySubjectGivenPredicateMap<V, T> {
-	any: HashSet<V>,
-	same_as_subject: HashSet<V>,
-	given: HashMap<T, HashSet<V>>,
+	any: BTreeSet<V>,
+	same_as_subject: BTreeSet<V>,
+	given: BTreeMap<T, BTreeSet<V>>,
 }
 
-impl<V: Eq + Hash, T: Eq + Hash> AnySubjectGivenPredicateMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> AnySubjectGivenPredicateMap<V, T> {
 	pub fn insert(&mut self, pattern: AnySubjectGivenPredicate<T>, value: V) -> bool {
 		match pattern {
 			AnySubjectGivenPredicate::AnyObject => self.any.insert(value),
@@ -395,7 +395,7 @@ impl<V: Eq + Hash, T: Eq + Hash> AnySubjectGivenPredicateMap<V, T> {
 	}
 }
 
-impl<V, T: Eq + Hash> AnySubjectGivenPredicateMap<V, T> {
+impl<V, T: Eq + Hash + Ord> AnySubjectGivenPredicateMap<V, T> {
 	pub fn get(&self, triple: Triple<&T>) -> AnySubjectGivenPredicateValues<V> {
 		AnySubjectGivenPredicateValues {
 			any: self.any.iter(),
@@ -417,7 +417,7 @@ impl<V, T: Eq + Hash> AnySubjectGivenPredicateMap<V, T> {
 // 	}
 // }
 
-impl<V: Eq + Hash, T: Eq + Hash> AnySubjectGivenPredicateMap<V, T> {
+impl<V: Eq + Hash + Ord, T: Eq + Hash + Ord> AnySubjectGivenPredicateMap<V, T> {
 	pub fn union_with(&mut self, other: Self) {
 		self.any.extend(other.any);
 		self.same_as_subject.extend(other.same_as_subject);
@@ -426,9 +426,9 @@ impl<V: Eq + Hash, T: Eq + Hash> AnySubjectGivenPredicateMap<V, T> {
 }
 
 pub struct AnySubjectGivenPredicateValues<'a, V> {
-	any: std::collections::hash_set::Iter<'a, V>,
-	same_as_subject: Option<std::collections::hash_set::Iter<'a, V>>,
-	given: Option<std::collections::hash_set::Iter<'a, V>>,
+	any: alloc::collections::btree_set::Iter<'a, V>,
+	same_as_subject: Option<alloc::collections::btree_set::Iter<'a, V>>,
+	given: Option<alloc::collections::btree_set::Iter<'a, V>>,
 }
 
 impl<'a, V> Iterator for AnySubjectGivenPredicateValues<'a, V> {

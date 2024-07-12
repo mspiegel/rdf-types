@@ -1,3 +1,4 @@
+use alloc::borrow::ToOwned;
 use core::fmt;
 
 use educe::Educe;
@@ -37,7 +38,11 @@ impl<I> LiteralType<I> {
 
 	pub fn is_xsd_string_with(&self, vocabulary: &impl IriVocabulary<Iri = I>) -> bool {
 		match self {
-			Self::Any(i) => vocabulary.iri(i).is_some_and(|iri| iri == XSD_STRING),
+			Self::Any(i) => if let Some(iri) = vocabulary.iri(i) {
+				iri == XSD_STRING
+			} else {
+				false
+			},
 			Self::LangString(_) => false,
 		}
 	}
@@ -200,7 +205,11 @@ impl<'a, I> LiteralTypeRef<'a, I> {
 
 	pub fn is_xsd_string_with(&self, vocabulary: &impl IriVocabulary<Iri = I>) -> bool {
 		match self {
-			Self::Any(i) => vocabulary.iri(i).is_some_and(|iri| iri == XSD_STRING),
+			Self::Any(i) => if let Some(iri) = vocabulary.iri(i) {
+				iri == XSD_STRING
+			} else {
+				false
+			},
 			Self::LangString(_) => false,
 		}
 	}

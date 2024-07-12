@@ -694,7 +694,7 @@ impl<T> AnySubjectAnyPredicate<T> {
 	}
 
 	pub fn set_object(&mut self, t: T) -> PatternObject<T> {
-		std::mem::replace(self, Self::GivenObject(t)).into_object()
+		core::mem::replace(self, Self::GivenObject(t)).into_object()
 	}
 }
 
@@ -758,7 +758,7 @@ impl<T> AnySubjectGivenPredicate<T> {
 	}
 
 	pub fn set_object(&mut self, t: T) -> PatternObject<T> {
-		std::mem::replace(self, Self::GivenObject(t)).into_object()
+		core::mem::replace(self, Self::GivenObject(t)).into_object()
 	}
 }
 
@@ -938,7 +938,7 @@ impl<T> GivenSubjectAnyPredicate<T> {
 	}
 
 	pub fn set_object(&mut self, t: T) -> PatternObject<T> {
-		std::mem::replace(self, Self::GivenObject(t)).into_object()
+		core::mem::replace(self, Self::GivenObject(t)).into_object()
 	}
 }
 
@@ -997,6 +997,6 @@ impl<T> GivenSubjectGivenPredicate<T> {
 	}
 
 	pub fn set_object(&mut self, t: T) -> PatternObject<T> {
-		std::mem::replace(self, Self::GivenObject(t)).into_object()
+		core::mem::replace(self, Self::GivenObject(t)).into_object()
 	}
 }

@@ -1,7 +1,7 @@
 use educe::Educe;
-use std::fmt::Debug;
-use std::hash::Hash;
-use std::marker::PhantomData;
+use core::fmt::Debug;
+use core::hash::Hash;
+use core::marker::PhantomData;
 
 use crate::interpretation::{
 	BlankIdInterpretation, IriInterpretation, LiteralInterpretation, ReverseBlankIdInterpretation,
@@ -159,12 +159,12 @@ where
 	V::BlankId: PartialOrd,
 	V::Literal: PartialOrd,
 {
-	fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+	fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
 		match (self, other) {
 			(Self::Anonymous(a), Self::Anonymous(b)) => a.partial_cmp(b),
-			(Self::Anonymous(_), _) => Some(std::cmp::Ordering::Greater),
+			(Self::Anonymous(_), _) => Some(core::cmp::Ordering::Greater),
 			(Self::Term(a), Self::Term(b)) => a.partial_cmp(b),
-			(_, Self::Anonymous(_)) => Some(std::cmp::Ordering::Less),
+			(_, Self::Anonymous(_)) => Some(core::cmp::Ordering::Less),
 		}
 	}
 }
@@ -175,12 +175,12 @@ where
 	V::BlankId: Ord,
 	V::Literal: Ord,
 {
-	fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+	fn cmp(&self, other: &Self) -> core::cmp::Ordering {
 		match (self, other) {
 			(Self::Anonymous(a), Self::Anonymous(b)) => a.cmp(b),
-			(Self::Anonymous(_), _) => std::cmp::Ordering::Greater,
+			(Self::Anonymous(_), _) => core::cmp::Ordering::Greater,
 			(Self::Term(a), Self::Term(b)) => a.cmp(b),
-			(_, Self::Anonymous(_)) => std::cmp::Ordering::Less,
+			(_, Self::Anonymous(_)) => core::cmp::Ordering::Less,
 		}
 	}
 }
@@ -205,7 +205,7 @@ where
 	V::BlankId: Hash,
 	V::Literal: Hash,
 {
-	fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+	fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
 		match self {
 			Self::Anonymous(a) => {
 				0u8.hash(state);

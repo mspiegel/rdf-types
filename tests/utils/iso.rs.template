@@ -1,6 +1,6 @@
 use rdf_types::{BlankIdBuf, Quad, Term, dataset::BTreeDataset};
 use static_iref::iri;
-use std::collections::BTreeMap;
+use alloc::collections::BTreeMap;
 
 fn test(a: BTreeDataset, b: BTreeDataset) {
 	match rdf_types::dataset::isomorphism::find_bijection(&a, &b) {

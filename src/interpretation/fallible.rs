@@ -7,7 +7,7 @@ pub trait FallibleInterpretation {
 
 impl<I: super::Interpretation> FallibleInterpretation for I {
 	type Resource = I::Resource;
-	type Error = std::convert::Infallible;
+	type Error = core::convert::Infallible;
 }
 
 pub trait TraversableFallibleInterpretation: FallibleInterpretation {

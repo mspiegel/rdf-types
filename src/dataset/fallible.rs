@@ -13,7 +13,7 @@ pub trait FallibleDataset {
 
 impl<D: Dataset> FallibleDataset for D {
 	type Resource = D::Resource;
-	type Error = std::convert::Infallible;
+	type Error = core::convert::Infallible;
 }
 
 /// Fallible traversable dataset.

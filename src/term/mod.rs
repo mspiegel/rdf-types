@@ -5,8 +5,8 @@ use crate::vocabulary::{
 };
 use crate::{BlankIdBuf, Literal, RdfDisplay};
 use iref::IriBuf;
-use std::fmt;
-use std::{cmp::Ordering, hash::Hash};
+use core::fmt;
+use core::{cmp::Ordering, hash::Hash};
 
 mod id;
 mod into;
@@ -53,7 +53,7 @@ pub enum Term<I = Id, L = Literal> {
 pub type LexicalTermRef<'a> = Term<LexicalIdRef<'a>, &'a Literal>;
 
 impl<I: Hash, L: Hash> Hash for Term<I, L> {
-	fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+	fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
 		match self {
 			Self::Id(id) => id.hash(state),
 			Self::Literal(l) => l.hash(state),
@@ -63,7 +63,7 @@ impl<I: Hash, L: Hash> Hash for Term<I, L> {
 
 #[cfg(feature = "meta")]
 impl<I: locspan::StrippedHash, L: locspan::StrippedHash> locspan::StrippedHash for Term<I, L> {
-	fn stripped_hash<H: std::hash::Hasher>(&self, state: &mut H) {
+	fn stripped_hash<H: core::hash::Hasher>(&self, state: &mut H) {
 		match self {
 			Self::Id(id) => id.stripped_hash(state),
 			Self::Literal(l) => l.stripped_hash(state),

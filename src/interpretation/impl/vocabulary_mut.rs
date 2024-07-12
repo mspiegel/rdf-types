@@ -1,8 +1,8 @@
 use educe::Educe;
-use std::collections::{HashMap, HashSet};
-use std::fmt::Debug;
-use std::hash::Hash;
-use std::iter::once;
+use alloc::collections::{BTreeMap, BTreeSet};
+use core::fmt::Debug;
+use core::hash::Hash;
+use core::iter::once;
 
 use crate::interpretation::{ReverseBlankIdInterpretation, ReverseBlankIdInterpretationMut};
 use crate::{
@@ -34,7 +34,7 @@ pub struct VocabularyInterpretationSubstitution<V: Vocabulary>(Vec<VocabTerm<V>>
 /// [`Self::as_substitution`], and using it to substitute resources back into
 /// terms.
 pub struct VocabularyInterpretation<V: Vocabulary> {
-	map: HashMap<Resource<V>, HashSet<VocabTerm<V>>>,
+	map: BTreeMap<Resource<V>, BTreeSet<VocabTerm<V>>>,
 	anonymous_count: usize,
 }
 
@@ -47,7 +47,7 @@ impl<V: Vocabulary> Default for VocabularyInterpretation<V> {
 impl<V: Vocabulary> VocabularyInterpretation<V> {
 	pub fn new() -> Self {
 		Self {
-			map: HashMap::new(),
+			map: BTreeMap::new(),
 			anonymous_count: 0,
 		}
 	}
@@ -340,12 +340,12 @@ where
 	V::BlankId: PartialOrd,
 	V::Literal: PartialOrd,
 {
-	fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+	fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
 		match (self, other) {
 			(Self::Anonymous(a), Self::Anonymous(b)) => a.partial_cmp(b),
-			(Self::Anonymous(_), _) => Some(std::cmp::Ordering::Greater),
+			(Self::Anonymous(_), _) => Some(core::cmp::Ordering::Greater),
 			(Self::Term(a), Self::Term(b)) => a.partial_cmp(b),
-			(_, Self::Anonymous(_)) => Some(std::cmp::Ordering::Less),
+			(_, Self::Anonymous(_)) => Some(core::cmp::Ordering::Less),
 		}
 	}
 }
@@ -356,12 +356,12 @@ where
 	V::BlankId: Ord,
 	V::Literal: Ord,
 {
-	fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+	fn cmp(&self, other: &Self) -> core::cmp::Ordering {
 		match (self, other) {
 			(Self::Anonymous(a), Self::Anonymous(b)) => a.cmp(b),
-			(Self::Anonymous(_), _) => std::cmp::Ordering::Greater,
+			(Self::Anonymous(_), _) => core::cmp::Ordering::Greater,
 			(Self::Term(a), Self::Term(b)) => a.cmp(b),
-			(_, Self::Anonymous(_)) => std::cmp::Ordering::Less,
+			(_, Self::Anonymous(_)) => core::cmp::Ordering::Less,
 		}
 	}
 }
@@ -386,7 +386,7 @@ where
 	V::BlankId: Hash,
 	V::Literal: Hash,
 {
-	fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+	fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
 		match self {
 			Self::Anonymous(a) => {
 				0u8.hash(state);
@@ -412,7 +412,7 @@ where
 #[educe(Clone)]
 pub struct IrisOf<'a, V: Vocabulary> {
 	term: Option<&'a VocabTerm<V>>,
-	additional_terms: Option<std::collections::hash_set::Iter<'a, VocabTerm<V>>>,
+	additional_terms: Option<alloc::collections::btree_set::Iter<'a, VocabTerm<V>>>,
 }
 
 impl<'a, V: Vocabulary> Iterator for IrisOf<'a, V> {
@@ -441,7 +441,7 @@ impl<'a, V: Vocabulary> Iterator for IrisOf<'a, V> {
 #[educe(Clone)]
 pub struct BlankIdsOf<'a, V: Vocabulary> {
 	term: Option<&'a VocabTerm<V>>,
-	additional_terms: Option<std::collections::hash_set::Iter<'a, VocabTerm<V>>>,
+	additional_terms: Option<alloc::collections::btree_set::Iter<'a, VocabTerm<V>>>,
 }
 
 impl<'a, V: Vocabulary> Iterator for BlankIdsOf<'a, V> {
@@ -470,7 +470,7 @@ impl<'a, V: Vocabulary> Iterator for BlankIdsOf<'a, V> {
 #[educe(Debug(bound(V::Iri: Debug, V::BlankId: Debug, V::Literal: Debug)))]
 pub struct LiteralsOf<'a, V: Vocabulary> {
 	term: Option<&'a VocabTerm<V>>,
-	additional_terms: Option<std::collections::hash_set::Iter<'a, VocabTerm<V>>>,
+	additional_terms: Option<alloc::collections::btree_set::Iter<'a, VocabTerm<V>>>,
 }
 
 impl<'a, V: Vocabulary> Clone for LiteralsOf<'a, V>

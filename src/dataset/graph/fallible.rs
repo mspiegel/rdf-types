@@ -10,7 +10,7 @@ pub trait FallibleGraph {
 
 impl<D: Graph> FallibleGraph for D {
 	type Resource = D::Resource;
-	type Error = std::convert::Infallible;
+	type Error = core::convert::Infallible;
 }
 
 pub trait FallibleTraversableGraph: FallibleGraph {

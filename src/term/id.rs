@@ -1,5 +1,6 @@
 use iref::{Iri, IriBuf};
-use std::{cmp::Ordering, fmt, hash::Hash};
+use alloc::borrow::ToOwned;
+use core::{cmp::Ordering, fmt, hash::Hash};
 
 #[cfg(feature = "meta")]
 use locspan_derive::*;
@@ -271,7 +272,7 @@ impl<'a> LexicalIdRef<'a> {
 }
 
 impl<I: Hash, B: Hash> Hash for Id<I, B> {
-	fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+	fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
 		match self {
 			Self::Blank(id) => id.hash(state),
 			Self::Iri(i) => i.hash(state),
@@ -281,7 +282,7 @@ impl<I: Hash, B: Hash> Hash for Id<I, B> {
 
 #[cfg(feature = "meta")]
 impl<I: Hash, B: Hash> locspan::StrippedHash for Id<I, B> {
-	fn stripped_hash<H: std::hash::Hasher>(&self, state: &mut H) {
+	fn stripped_hash<H: core::hash::Hasher>(&self, state: &mut H) {
 		match self {
 			Self::Blank(id) => id.hash(state),
 			Self::Iri(i) => i.hash(state),

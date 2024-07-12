@@ -58,3 +58,17 @@ jobs:
         with:
           command: clippy
           args: --all-features -- -D warnings
+  no_std:
+    name: no_std
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+      - name: Build
+        run: cargo build --verbose --no-default-features --features="no_std"

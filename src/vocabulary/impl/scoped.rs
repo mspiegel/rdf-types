@@ -1,3 +1,5 @@
+use alloc::borrow::ToOwned;
+use alloc::format;
 use crate::{
 	vocabulary::{
 		BlankIdVocabulary, BlankIdVocabularyMut, IriVocabulary, IriVocabularyMut,
@@ -6,7 +8,7 @@ use crate::{
 	BlankId, BlankIdBuf, Literal, LiteralRef,
 };
 use iref::Iri;
-use std::collections::HashMap;
+use alloc::collections::BTreeMap;
 
 /// Vocabulary wrapper that helps avoid blank id collisions.
 ///
@@ -54,7 +56,7 @@ use std::collections::HashMap;
 /// ```
 pub struct Scoped<'a, V: BlankIdVocabulary, S> {
 	scope: S,
-	map: HashMap<BlankIdBuf, V::BlankId>,
+	map: BTreeMap<BlankIdBuf, V::BlankId>,
 	pub(crate) inner: &'a mut V,
 }
 
@@ -66,7 +68,7 @@ impl<'a, V: BlankIdVocabulary, S> Scoped<'a, V, S> {
 	pub fn new(vocabulary: &'a mut V, scope: S) -> Self {
 		Self {
 			scope,
-			map: HashMap::new(),
+			map: BTreeMap::new(),
 			inner: vocabulary,
 		}
 	}
@@ -105,7 +107,7 @@ where
 	}
 }
 
-impl<'a, V: BlankIdVocabularyMut, S: std::fmt::Display> BlankIdVocabularyMut for Scoped<'a, V, S>
+impl<'a, V: BlankIdVocabularyMut, S: core::fmt::Display> BlankIdVocabularyMut for Scoped<'a, V, S>
 where
 	V::BlankId: Clone,
 {

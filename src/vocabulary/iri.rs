@@ -1,3 +1,4 @@
+use alloc::borrow::ToOwned;
 use iref::{Iri, IriBuf};
 
 use super::{EmbedIntoVocabulary, EmbeddedIntoVocabulary};

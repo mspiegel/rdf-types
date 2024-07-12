@@ -1,4 +1,5 @@
-use std::ptr::addr_of_mut;
+use alloc::borrow::ToOwned;
+use core::ptr::addr_of_mut;
 
 use crate::{
 	vocabulary::{

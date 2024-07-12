@@ -1,4 +1,5 @@
-use std::hash::Hash;
+use alloc::borrow::ToOwned;
+use core::hash::Hash;
 
 use crate::vocabulary::{ExtractFromVocabulary, ExtractedFromVocabulary, LiteralVocabulary};
 use crate::{Literal, LiteralRef};
@@ -79,7 +80,7 @@ impl<V: crate::vocabulary::LiteralVocabulary<Literal = Self>> contextual::Displa
 where
 	V::Iri: crate::RdfDisplayWithContext<V>,
 {
-	fn fmt_with(&self, vocabulary: &V, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+	fn fmt_with(&self, vocabulary: &V, f: &mut core::fmt::Formatter) -> core::fmt::Result {
 		use crate::RdfDisplayWithContext;
 		vocabulary
 			.literal(self)
@@ -94,7 +95,7 @@ impl<V: crate::vocabulary::LiteralVocabulary<Literal = Self>> crate::RdfDisplayW
 where
 	V::Iri: crate::RdfDisplayWithContext<V>,
 {
-	fn rdf_fmt_with(&self, vocabulary: &V, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+	fn rdf_fmt_with(&self, vocabulary: &V, f: &mut core::fmt::Formatter) -> core::fmt::Result {
 		vocabulary
 			.literal(self)
 			.unwrap()
@@ -146,7 +147,7 @@ impl<I, V: crate::vocabulary::LiteralVocabulary<Literal = LiteralOrIndex<I>>>
 where
 	V::Iri: crate::RdfDisplayWithContext<V>,
 {
-	fn fmt_with(&self, vocabulary: &V, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+	fn fmt_with(&self, vocabulary: &V, f: &mut core::fmt::Formatter) -> core::fmt::Result {
 		use crate::RdfDisplayWithContext;
 		vocabulary
 			.literal(self)
@@ -161,7 +162,7 @@ impl<I, V: crate::vocabulary::LiteralVocabulary<Literal = LiteralOrIndex<I>>>
 where
 	V::Iri: crate::RdfDisplayWithContext<V>,
 {
-	fn rdf_fmt_with(&self, vocabulary: &V, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+	fn rdf_fmt_with(&self, vocabulary: &V, f: &mut core::fmt::Formatter) -> core::fmt::Result {
 		vocabulary
 			.literal(self)
 			.unwrap()
